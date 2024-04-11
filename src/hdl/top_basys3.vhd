@@ -92,8 +92,42 @@ end top_basys3;
 architecture top_basys3_arch of top_basys3 is 
   
 	-- declare components and signals
-
-  
+component sevenSegDecoder is 
+    Port ( i_D : in STD_LOGIC_VECTOR (3 downto 0);
+          o_S : out STD_LOGIC_VECTOR (6 downto 0));
+    end component sevenSegDecoder;
+    
+component elevator_controller_fsm is
+    Port ( i_clk     : in  STD_LOGIC;
+           i_reset   : in  STD_LOGIC;
+           i_stop    : in  STD_LOGIC;
+           i_up_down : in  STD_LOGIC;
+           o_floor   : out STD_LOGIC_VECTOR (3 downto 0)		   
+		 );
+    end component elevator_controller_fsm;
+    
+component clock_divider is
+    generic ( constant k_DIV : natural := 2    ); 
+    port (     i_clk    : in std_logic;
+            i_reset  : in std_logic;           
+            o_clk    : out std_logic          
+    );
+    end component clock_divider;
+    
+component TDM4 is
+    generic ( constant k_WIDTH : natural  := 4); -- bits in input and output
+    Port ( i_clk		: in  STD_LOGIC;
+           i_reset		: in  STD_LOGIC; -- asynchronous
+           i_D3 		: in  STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0);
+		   i_D2 		: in  STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0);
+		   i_D1 		: in  STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0);
+		   i_D0 		: in  STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0);
+		   o_data		: out STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0);
+		   o_sel		: out STD_LOGIC_VECTOR (3 downto 0)	-- selected data line (one-cold)
+	);
+	end component TDM4;
+	
+	
 begin
 	-- PORT MAPS ----------------------------------------
 

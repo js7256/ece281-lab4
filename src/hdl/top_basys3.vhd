@@ -130,8 +130,20 @@ component TDM4 is
 	
 begin
 	-- PORT MAPS ----------------------------------------
-
 	
+	UUT_inst : sevenSegDecoder
+	port map (
+	    
+	
+    UUT_inst : elevator_controller_fsm
+    port map (
+        i_stop => sw(0),
+        i_up_down => sw(1),
+        i_reset => btnR,
+        i_clk => clk
+    );
+	
+
 	
 	-- CONCURRENT STATEMENTS ----------------------------
 	

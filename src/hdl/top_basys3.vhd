@@ -135,8 +135,7 @@ component TDM4 is
        -- Signals --------------------------------------- 
        signal w_clk, w_fsm_reset, w_clk_reset, w_reset : STD_LOGIC := '0'; 
        signal w_D3, w_D2, w_D1, w_D0, f_data, f_sel : STD_LOGIC_VECTOR(k_IO_width-1 downto 0); 
-       
-       signal clk_reset : std_logic;
+       signal elevator_floor : STD_LOGIC_VECTOR(3 downto 0);
 	
 begin
 	-- PORT MAPS ----------------------------------------
@@ -145,7 +144,7 @@ begin
 	
 	sevenSeg_inst : sevenSegDecoder
 	port map (
-	    i_D => sw,
+	    i_D => f_data,
 	    o_S => seg
 	);
 	
@@ -200,6 +199,7 @@ begin
 	 
 	an(2) <= '0' when f_sel(2) = '0' else '1';
 	
+	f_data <= elevator_floor;
 
 	
 end top_basys3_arch;

@@ -70,7 +70,7 @@ library ieee;
   use ieee.numeric_std.all;
 
 
--- Lab 4
+-- Lab 4 -------------------------------------------------------
 entity top_basys3 is
     port(
         -- inputs
@@ -88,7 +88,7 @@ entity top_basys3 is
         an  :   out std_logic_vector(3 downto 0)
     );
 end top_basys3;
-
+----------------------------------------------------------------
 architecture top_basys3_arch of top_basys3 is 
   
 	-- declare components and signals
@@ -128,31 +128,74 @@ component TDM4 is
 	end component TDM4;
 	
 	
+	  -- Constants --------------------------------------
+	   constant k_IO_WIDTH : natural := 4;
+       constant k_clk_period : time := 20ns;
+       
+       -- Signals --------------------------------------- 
+       signal w_clk, w_reset : STD_LOGIC := '0'; 
+       signal w_D3, w_D2, w_D1, w_D0, f_data, f_sel : STD_LOGIC_VECTOR(k_IO_width-1 downto 0); 
+       
+       
+	
 begin
 	-- PORT MAPS ----------------------------------------
 	
-	UUT_inst : sevenSegDecoder
+	sevenSeg_inst : sevenSegDecoder
 	port map (
-	    
+	    i_D => sw,
+	    o_S => seg
+	);
 	
-    UUT_inst : elevator_controller_fsm
+    elevator_inst : elevator_controller_fsm
     port map (
         i_stop => sw(0),
         i_up_down => sw(1),
         i_reset => btnR,
         i_clk => clk
     );
+    
+    clkdiv_inst : clock_divider 		
+    generic map ( k_DIV => 40000000 ) 
+    port map (                          
+        i_clk   => clk,
+        i_reset => btnL,
+        o_clk   => w_clk 
+    );
+    
+    TDM4_inst : TDM4 
+    generic map ( k_WIDTH => k_IO_WIDTH )
+    port map ( 
+        i_clk   => w_clk,
+        i_reset => w_reset,
+        i_D3    => w_D3,
+        i_D2    => w_D2,
+        i_D1    => w_D1,
+        i_D0    => w_D0,
+        o_data  => f_data,
+        o_sel   => f_sel 
+    );
+        
+        
+            
 	
 
 	
 	-- CONCURRENT STATEMENTS ----------------------------
 	
 	-- LED 15 gets the FSM slow clock signal. The rest are grounded.
-	
+	w_clk <= led(15); 
+	led(14 downto 0) <= (others => '0'); 
 
 	-- leave unused switches UNCONNECTED. Ignore any warnings this causes.
 	
 	-- wire up active-low 7SD anodes (an) as required
 	-- Tie any unused anodes to power ('1') to keep them off
+	an(0) <= '1';
+	an(1) <= '1'; 
+	an(3) <= '1';
+	 
+	an(2) <= '0' when f_sel(2) = '0' else '1';
+	
 	
 end top_basys3_arch;

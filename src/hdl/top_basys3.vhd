@@ -133,13 +133,15 @@ component TDM4 is
        constant k_clk_period : time := 20ns;
        
        -- Signals --------------------------------------- 
-       signal w_clk, w_reset : STD_LOGIC := '0'; 
+       signal w_clk, w_fsm_reset, w_clk_reset, w_reset : STD_LOGIC := '0'; 
        signal w_D3, w_D2, w_D1, w_D0, f_data, f_sel : STD_LOGIC_VECTOR(k_IO_width-1 downto 0); 
        
-       
+       signal clk_reset : std_logic;
 	
 begin
 	-- PORT MAPS ----------------------------------------
+	w_clk_reset <= btnU or btnL;
+	w_fsm_reset <= btnU or btnR;
 	
 	sevenSeg_inst : sevenSegDecoder
 	port map (
@@ -151,15 +153,15 @@ begin
     port map (
         i_stop => sw(0),
         i_up_down => sw(1),
-        i_reset => btnR,
+        i_reset => w_fsm_reset,
         i_clk => clk
     );
-    
+        
     clkdiv_inst : clock_divider 		
     generic map ( k_DIV => 40000000 ) 
     port map (                          
         i_clk   => clk,
-        i_reset => btnL,
+        i_reset => w_clk_reset,
         o_clk   => w_clk 
     );
     
@@ -190,6 +192,7 @@ begin
 	-- leave unused switches UNCONNECTED. Ignore any warnings this causes.
 	
 	-- wire up active-low 7SD anodes (an) as required
+
 	-- Tie any unused anodes to power ('1') to keep them off
 	an(0) <= '1';
 	an(1) <= '1'; 
@@ -197,5 +200,6 @@ begin
 	 
 	an(2) <= '0' when f_sel(2) = '0' else '1';
 	
+
 	
 end top_basys3_arch;

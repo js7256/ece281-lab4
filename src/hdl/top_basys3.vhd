@@ -153,7 +153,8 @@ begin
         i_stop => sw(0),
         i_up_down => sw(1),
         i_reset => w_fsm_reset,
-        i_clk => clk
+        i_clk => clk,
+        o_floor => elevator_floor
     );
         
     clkdiv_inst : clock_divider 		
@@ -186,6 +187,9 @@ begin
 	
 	-- LED 15 gets the FSM slow clock signal. The rest are grounded.
 	w_clk <= led(15); 
+	
+	f_data <= elevator_floor;
+
 	led(14 downto 0) <= (others => '0'); 
 
 	-- leave unused switches UNCONNECTED. Ignore any warnings this causes.
@@ -199,7 +203,6 @@ begin
 	 
 	an(2) <= '0' when f_sel(2) = '0' else '1';
 	
-	f_data <= elevator_floor;
 
 	
 end top_basys3_arch;

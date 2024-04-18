@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="38" Path="C:/Users/Joseph.Shearer/ece281-lab4/elevator_fsm.xpr">
+<Project Version="7" Minor="38" Path="C:/Users/Stephen.Varnier/Downloads/ECE_Files/Labs/ece281-lab4/elevator_fsm.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="b1c0a845f5be438ba899898319c7b414"/>

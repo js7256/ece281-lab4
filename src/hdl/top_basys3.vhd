@@ -107,13 +107,14 @@ component elevator_controller_fsm is
     end component elevator_controller_fsm;
     
 component clock_divider is
-    generic ( constant k_DIV : natural := 2    ); 
+    generic ( constant k_DIV : natural := 2); 
     port (     i_clk    : in std_logic;
             i_reset  : in std_logic;           
             o_clk    : out std_logic          
     );
     end component clock_divider;
-    
+
+
 component TDM4 is
     generic ( constant k_WIDTH : natural  := 4); -- bits in input and output
     Port ( i_clk		: in  STD_LOGIC;
@@ -123,7 +124,7 @@ component TDM4 is
 		   i_D1 		: in  STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0);
 		   i_D0 		: in  STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0);
 		   o_data		: out STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0);
-		   o_sel		: out STD_LOGIC_VECTOR (3 downto 0)	-- selected data line (one-cold)
+		   o_sel		: out STD_LOGIC_VECTOR (k_WIDTH - 1 downto 0)	-- selected data line (one-cold)
 	);
 	end component TDM4;
 	
@@ -133,7 +134,7 @@ component TDM4 is
        constant k_clk_period : time := 20ns;
        
        -- Signals --------------------------------------- 
-       signal w_clk, w_fsm_reset, w_clk_reset, w_reset : STD_LOGIC := '0'; 
+       signal w_clk, w_clk_1hz, w_fsm_reset, w_clk_reset, w_reset : STD_LOGIC := '0'; 
        signal w_D3, w_D2, w_D1, w_D0, f_data, f_sel : STD_LOGIC_VECTOR(k_IO_width-1 downto 0); 
        signal elevator_floor : STD_LOGIC_VECTOR(3 downto 0);
        signal w_floor : std_logic_vector(3 downto 0) := (others => '0');
@@ -146,7 +147,7 @@ begin
 	
 	sevenSeg_inst : sevenSegDecoder
 	port map (
-	    i_D => f_data,
+	    i_D => w_floor,
 	    o_S => seg
 	);
 	
@@ -155,16 +156,24 @@ begin
         i_stop => sw(0),
         i_up_down => sw(1),
         i_reset => w_fsm_reset,
-        i_clk => clk,
-        o_floor => elevator_floor
+        i_clk => w_clk_1hz,
+        o_floor => w_floor
     );
         
     clkdiv_inst : clock_divider 		
-    generic map ( k_DIV => 40000000 ) 
+    generic map ( k_DIV => 50000000 ) 
     port map (                          
         i_clk   => clk,
         i_reset => w_clk_reset,
         o_clk   => w_clk 
+    );
+    
+   clkdiv_1hz_inst : clock_divider
+    generic map ( k_DIV => 100000000 ) -- k_DIV = 100,000,000 for 1 Hz
+    port map (
+        i_clk   => clk,
+        i_reset => w_clk_reset,
+        o_clk   => w_clk_1hz -- This is the clock for updating data
     );
     
     TDM4_inst : TDM4 
@@ -188,9 +197,9 @@ begin
 	-- CONCURRENT STATEMENTS ----------------------------
 	
 	-- LED 15 gets the FSM slow clock signal. The rest are grounded.
-	w_clk <= led(15); 
+	led(15) <= w_clk; 
 	
-	f_data <= elevator_floor;
+	w_floor <= elevator_floor;
 
 	led(14 downto 0) <= (others => '0'); 
 

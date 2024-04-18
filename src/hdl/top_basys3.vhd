@@ -107,7 +107,7 @@ component elevator_controller_fsm is
     end component elevator_controller_fsm;
     
 component clock_divider is
-    generic ( constant k_DIV : natural := 2    ); 
+    generic ( constant k_DIV : natural := 4    ); 
     port (     i_clk    : in std_logic;
             i_reset  : in std_logic;           
             o_clk    : out std_logic          
@@ -130,7 +130,7 @@ component TDM4 is
 	
 	  -- Constants --------------------------------------
 	   constant k_IO_WIDTH : natural := 4;
-       constant k_clk_period : time := 20ns;
+       constant k_clk_period : time := 100ns;
        
        -- Signals --------------------------------------- 
        signal w_clk, w_fsm_reset, w_clk_reset, w_reset : STD_LOGIC := '0'; 
@@ -143,20 +143,22 @@ begin
 	-- PORT MAPS ----------------------------------------
 	w_clk_reset <= btnU or btnL;
 	w_fsm_reset <= btnU or btnR;
+	w_stop <= sw(0);
+	w_up_down <= sw(1);
 	
 	sevenSeg_inst : sevenSegDecoder
 	port map (
-	    i_D => f_data,
+	    i_D => w_floor,
 	    o_S => seg
 	);
 	
     elevator_inst : elevator_controller_fsm
     port map (
-        i_stop => sw(0),
-        i_up_down => sw(1),
+        i_stop => w_stop,
+        i_up_down => w_up_down,
         i_reset => w_fsm_reset,
         i_clk => clk,
-        o_floor => elevator_floor
+        o_floor => w_floor
     );
         
     clkdiv_inst : clock_divider 		
@@ -190,7 +192,7 @@ begin
 	-- LED 15 gets the FSM slow clock signal. The rest are grounded.
 	w_clk <= led(15); 
 	
-	f_data <= elevator_floor;
+	w_floor <= elevator_floor;
 
 	led(14 downto 0) <= (others => '0'); 
 

@@ -75,7 +75,7 @@ entity elevator_controller_fsm is
            i_reset   : in  STD_LOGIC;
            i_stop    : in  STD_LOGIC;
            i_up_down : in  STD_LOGIC;
-           o_floor   : out STD_LOGIC_VECTOR (3 downto 0)		   
+           o_floor   : out STD_LOGIC_VECTOR (14 downto 0)		   
 		 );
 end elevator_controller_fsm;
 
@@ -87,7 +87,7 @@ architecture Behavioral of elevator_controller_fsm is
     -- variable type can take on. Now you can assign a signal as 
     -- "sm_floor" the same way you'd assign a signal as std_logic
 	-- how would you modify this to go up to 15 floors?
-	type sm_floor is (s_floor1, s_floor2, s_floor3, s_floor4);
+	type sm_floor is (s_floor1, s_floor2, s_floor3, s_floor4, s_floor5, s_floor6, s_floor7, s_floor8, s_floor9, s_floor10, s_floor11, s_floor12, s_floor13, s_floor14, s_floor15, s_floor16);
 	
 	-- Here you create variables that can take on the values defined above. Neat!	
 	signal f_Q, f_Q_next : sm_floor;
@@ -100,9 +100,31 @@ begin
                 s_floor2 when i_up_down = '1' and f_Q = s_floor1 else
                 s_floor3 when i_up_down = '1' and f_Q = s_floor2 else
                 s_floor4 when i_up_down = '1' and f_Q = s_floor3 else
-                s_floor4 when i_up_down = '1' and f_Q = s_floor4 else
+                s_floor5 when i_up_down = '1' and f_Q = s_floor4 else
+                s_floor6 when i_up_down = '1' and f_Q = s_floor5 else
+                s_floor7 when i_up_down = '1' and f_Q = s_floor6 else
+                s_floor8 when i_up_down = '1' and f_Q = s_floor7 else
+                s_floor9 when i_up_down = '1' and f_Q = s_floor8 else
+                s_floor10 when i_up_down = '1' and f_Q = s_floor9 else
+                s_floor11 when i_up_down = '1' and f_Q = s_floor10 else
+                s_floor12 when i_up_down = '1' and f_Q = s_floor11 else
+                s_floor13 when i_up_down = '1' and f_Q = s_floor12 else
+                s_floor14 when i_up_down = '1' and f_Q = s_floor13 else
+                s_floor15 when i_up_down = '1' and f_Q = s_floor14 else
+                s_floor15 when i_up_down = '1' and f_Q = s_floor15 else
                 s_floor2 when i_up_down = '0' and f_Q = s_floor3 else
-                s_floor3 when i_up_down = '0' and f_Q = s_floor4 else -- going down
+                s_floor3 when i_up_down = '0' and f_Q = s_floor4 else
+                s_floor4 when i_up_down = '0' and f_Q = s_floor5 else
+                s_floor5 when i_up_down = '0' and f_Q = s_floor6 else
+                s_floor6 when i_up_down = '0' and f_Q = s_floor7 else
+                s_floor7 when i_up_down = '0' and f_Q = s_floor8 else
+                s_floor8 when i_up_down = '0' and f_Q = s_floor9 else
+                s_floor9 when i_up_down = '0' and f_Q = s_floor10 else
+                s_floor10 when i_up_down = '0' and f_Q = s_floor11 else
+                s_floor11 when i_up_down = '0' and f_Q = s_floor12 else
+                s_floor12 when i_up_down = '0' and f_Q = s_floor13 else
+                s_floor13 when i_up_down = '0' and f_Q = s_floor14 else
+                s_floor14 when i_up_down = '0' and f_Q = s_floor15 else -- going down
                 s_floor1; -- default case
   
 	-- Output logic
@@ -111,6 +133,17 @@ begin
                    "0001" when s_floor1,
                    "0011" when s_floor3,
                    "0100" when s_floor4,
+                   "0101" when s_floor5,
+                   "0110" when s_floor6,
+                   "0111" when s_floor7,
+                   "1000" when s_floor8,
+                   "1001" when s_floor9,
+                   "1010" when s_floor10,
+                   "1011" when s_floor11,
+                   "1100" when s_floor12,
+                   "1101" when s_floor13,
+                   "1110" when s_floor14,
+                   "1111" when s_floor15,
                    "0010" when others; -- default is floor 2
 	
 	-------------------------------------------------------------------------------------------------------

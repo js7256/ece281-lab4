@@ -203,10 +203,9 @@ begin
 	-- Tie any unused anodes to power ('1') to keep them off
 	an(0) <= '1';
 	an(1) <= '1'; 
-	an(3) <= '1';
 	 
 	an(2) <= '0' when f_sel(2) = '0';
-	
+	an(3) <= '0' when f_sel(2) = '0';
 
 	
 end top_basys3_arch;

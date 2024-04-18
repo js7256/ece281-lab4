@@ -135,8 +135,8 @@ component TDM4 is
        -- Signals --------------------------------------- 
        signal w_clk, w_fsm_reset, w_clk_reset, w_reset : STD_LOGIC := '0'; 
        signal w_D3, w_D2, w_D1, w_D0, f_data, f_sel : STD_LOGIC_VECTOR(k_IO_width-1 downto 0); 
-       signal elevator_floor : STD_LOGIC_VECTOR(3 downto 0);
-       signal w_floor : std_logic_vector(3 downto 0) := (others => '0');
+       signal elevator_floor : STD_LOGIC_VECTOR(14 downto 0);
+       signal w_floor : std_logic_vector(14 downto 0) := (others => '0');
        signal w_stop, w_up_down : std_logic := '0';
 	
 begin
